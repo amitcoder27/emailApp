@@ -21,6 +21,8 @@ export default function Home() {
   const [page, setPage] = useState(1);
 
 
+
+
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query), 300);
     return () => clearTimeout(t);
@@ -60,6 +62,15 @@ export default function Home() {
     page * PAGE_SIZE
   );
 
+  useEffect(() => {
+  
+  if (page > totalPages && totalPages > 0) {
+    setPage(totalPages); 
+  }
+}, [totalPages, page]);
+
+console.log(totalPages,"totalPages");
+
   const openEmail = (email: Email) => {
     setSelected(email);
     setEmails((prev) =>
@@ -95,48 +106,108 @@ export default function Home() {
           onDelete={deleteEmail}
         />
 
-       
-        <div className="pager">
-          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
-            Prev
-          </button>
-          <span>{page} / {totalPages || 1}</span>
-          <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>
-            Next
-          </button>
-        </div>
+
+  <div className="pager">
+  <button 
+    disabled={page <= 1} 
+    onClick={() => setPage(p => p - 1)}
+  >
+    Prev
+  </button>
+  
+  <span>{page} / {totalPages || 1}</span>
+  
+  <button 
+    disabled={page >= totalPages || totalPages === 0} 
+    onClick={() => setPage(p => p + 1)}
+  >
+    Next
+  </button>
+</div>
       </div>
 
       <div className="content">
         <EmailDetail email={selected} />
       </div>
 
-      <style jsx>{`
-        .container {
-          display: flex;
-          height: 100vh;
-        }
-        .sidebar {
-          width: 40%;
-          min-width: 320px;
-          border-right: 1px solid #ddd;
-          padding: 12px;
-        }
-        .content {
-          flex: 1;
-          padding: 12px;
-        }
-        .pager {
-          margin-top: 10px;
-          display: flex;
-          justify-content: space-between;
-        }
-        @media (max-width: 1024px) {
-          .sidebar {
-            width: 45%;
-          }
-        }
-      `}</style>
+     <style jsx>{`
+ 
+  .container {
+    display: flex;
+    height: 100vh;
+    background-color: #f9fafb; /* Light neutral background */
+    color: #1f2937;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .sidebar {
+    width: 380px;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.02);
+  }
+
+  .content {
+    flex: 1;
+    background: #ffffff;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+ 
+  .pager {
+    margin-top: auto;
+    padding: 1rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .pager span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #181819ff;
+  }
+
+  .pager button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pager button:hover:not(:disabled) {
+    background: #c0c2c5ff;
+    border-color: #d1d5db;
+  }
+
+  .pager button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 100%;
+      height: 50vh;
+      border-right: none;
+      border-bottom: 1px solid #e5e7eb;
+    }
+  }
+`}</style>
     </main>
   );
 }
